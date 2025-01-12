@@ -1,0 +1,175 @@
+Міністерство освіти та науки України
+Харківський національний університет радіоелектроніки
+Кафедра програмної інженерії
+
+
+
+ЗВІТ
+з практичного завдання № 2
+з дисципліни «Аналіз та рефакторинг коду»
+на тему «Методи рефакторингу коду програмного забезпечення»
+
+
+
+
+ 
+Виконав:
+студент групи ПЗПІ-22-10
+Пугачов К. В.
+
+Перевірив:
+ст. викл. каф. ПІ
+Сокорчук І.П.
+ 
+
+
+
+
+
+
+
+
+Харків 2024
+	Мета:
+     Ознайомитися з різними методами рефакторингу програмного коду та навчитися використовувати їх на реальних прикладах.
+     
+     Завдання:
+     Обрати три методи рефакторингу коду із книги Мартіна Фаулера «Refactoring. Improving the Design of Existing Code». Створити презентацію де продемонструвати використання обраних методів на своєму коді.
+     
+     Хід роботи:
+     Було обрано мову програмування C#. У презентації (Додаток Б) продемонстровано застосування цих методів до власного програмного коду C#.
+     
+     Висновки:
+     Набуто навичок рефакторингу програмного коду, детально розглянуто методи рефакторингу програмного коду.
+
+     Відео-презентація: https://youtu.be/T8X1-0_SXMI
+
+
+
+
+
+
+
+
+
+
+
+
+ДОДАТОК А
+     Презентація на тему «Правила оформлення програмного коду»
+
+ 
+Рис. 1. Титульна сторінка
+
+ 
+Рис. 2. Проблема що вимагає використання Collapse Hierarchy
+
+ 
+Рис. 3. Рішення проблеми за допомогою Collapse Hierarchy
+
+      
+Рис. 4. Приклад проблеми з коду що вимагає використання Collapse Hierarchy
+
+ 
+Рис. 5. Рішення проблеми з коду за допомогою Collapse Hierarchy
+
+ 
+Рис. 6. Проблема що вимагає використання Decompose Conditional
+ 
+Рис. 7. Рішення проблеми за допомогою Decompose Conditional
+
+ 
+Рис. 8. Приклад проблеми з коду що вимагає використання Decompose Conditional
+
+ 
+Рис. 9. Рішення проблеми з коду за допомогою Decompose Conditional
+
+ 
+Рис. 10. Проблема що вимагає використання Encapsulate Field
+ 
+Рис. 11. Рішення проблеми за допомогою Encapsulate Field
+
+ 
+Рис. 12. Приклад проблеми з коду що вимагає використання Encapsulate Field
+
+ 
+Рис. 13. Рішення проблеми з коду за допомогою Encapsulate Field
+
+ 
+Рис. 14. Використані джерела
+
+
+
+
+
+
+ДОДАТОК Б
+
+Програмний код, використаний як приклад у презентації.
+
+using System;
+using System.Collections.Generic;
+
+namespace LibraryManagement
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Library library = new Library();
+            library.AddBook("The Great Gatsby", "F. Scott Fitzgerald", 1925);
+            library.AddBook("1984", "George Orwell", 1949);
+
+            Console.WriteLine("Books in Library:");
+            library.DisplayBooks();
+
+            Console.WriteLine("\nUpdating a book...");
+            library.UpdateBook(1, "Nineteen Eighty-Four", "George Orwell", 1949);
+            library.DisplayBooks();
+        }
+    }
+
+    class Library
+    {
+        private List<Book> books;
+
+        public Library()
+        {
+            books = new List<Book>();
+        }
+
+        public void AddBook(string title, string author, int year)
+        {
+            books.Add(new Book { Title = title, Author = author, Year = year });
+        }
+
+        public void UpdateBook(int index, string title, string author, int year)
+        {
+            if (index >= 0 && index < books.Count)
+            {
+                books[index].Title = title;
+                books[index].Author = author;
+                books[index].Year = year;
+            }
+            else
+            {
+                Console.WriteLine("Invalid index");
+            }
+        }
+
+        public void DisplayBooks()
+        {
+            foreach (var book in books)
+            {
+                Console.WriteLine($"Title: {book.Title}, Author: {book.Author}, Year: {book.Year}");
+            }
+        }
+    }
+
+    class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int Year { get; set; }
+    }
+}
