@@ -1,0 +1,200 @@
+Міністерство освіти та науки України
+Харківський національний університет радіоелектроніки
+Кафедра програмної інженерії
+
+
+
+ЗВІТ
+з практичного завдання № 1
+з дисципліни «Аналіз та рефакторинг коду»
+на тему «Правила оформлення програмного коду»
+
+
+
+
+ 
+Виконав:
+студент групи ПЗПІ-22-10
+Пугачов К. В.
+
+Перевірив:
+ст. викл. каф. ПІ
+Сокорчук І.П.
+ 
+
+
+
+
+
+
+
+
+Харків 2024
+	Мета:
+     Навчитися рефакторингу програмного коду, закріпити основні правила оформлення коду.
+     
+     Завдання:
+     Обрати мову програмування для прикладів коду. Створити презентацію на тему «Правила оформлення програмного коду».
+     
+     Хід роботи:
+     Було обрано мову програмування Lua. У презентації (Додаток A) наведено основні правила і рекомендації щодо оформлення програмного коду Lua, а також демонстрація переваг застосування цих рекомендацій.
+     
+     Висновки:
+     Набуто навичок рефакторингу програмного коду, детально розглянуто основні правила оформлення коду. 
+
+     Відео-презентація: https://youtu.be/DtAIh7a80Sw
+
+
+
+
+
+
+
+
+
+
+
+
+ДОДАТОК А
+     Презентація на тему «Правила оформлення програмного коду»
+
+ 
+Рис. 1. Титульна сторінка
+
+ 
+Рис. 2. Введення
+
+ 
+Рис. 3. Коментарі
+
+      
+Рис. 4. Форматування коду
+
+ 
+Рис. 5. Іменування
+
+ 
+Рис. 6. Модульний підхід
+ 
+Рис. 7. Документування коду
+
+ 
+Рис. 8. Тестування
+
+ 
+Рис. 9. Інструменти для роботи з Lua
+
+ 
+Рис. 10. Бібліотеки
+ 
+Рис. 11. Висновки
+
+ 
+Рис. 12. Використані джерела
+
+
+
+
+
+
+ДОДАТОК Б
+
+Програмний код, використаний як приклад у презентації.
+
+Файл: main.lua
+
+local player = require("player")
+
+print("=== Вітаємо у текстовій грі! ===")
+player.init(100, 5)
+
+while true do
+    print("\nОберіть дію:")
+    print("1. Додати бали")
+    print("2. Зменшити здоров'я")
+    print("3. Показати стан гравця")
+    print("4. Зберегти стан")
+    print("5. Завантажити стан")
+    print("6. Вихід")
+
+    local choice = tonumber(io.read())
+    if choice == 1 then
+        print("Введіть кількість балів:")
+        local points = tonumber(io.read())
+        player.updateScore(points)
+    elseif choice == 2 then
+        print("Введіть кількість шкоди:")
+        local damage = tonumber(io.read())
+        player.updateHealth(-damage)
+    elseif choice == 3 then
+        player.printStatus()
+    elseif choice == 4 then
+        player.saveState("player_state.json")
+        print("Стан збережено.")
+    elseif choice == 5 then
+        player.loadState("player_state.json")
+        print("Стан завантажено.")
+    elseif choice == 6 then
+        print("Вихід з гри.")
+        break
+    else
+        print("Невірний вибір, спробуйте ще раз.")
+    end
+end
+
+Файл: player.lua
+
+local json = require("dkjson")
+
+local player = {
+    score = 0,
+    health = 0,
+    max_health = 5
+}
+
+function player.init(starting_score, max_health)
+    player.score = starting_score
+    player.health = max_health
+    player.max_health = max_health
+end
+
+function player.updateScore(points)
+    player.score = player.score + points
+    print("Рахунок оновлено! Новий рахунок: " .. player.score)
+end
+
+function player.updateHealth(change)
+    player.health = math.max(0, math.min(player.health + change, player.max_health))
+    print("Здоров'я оновлено! Здоров'я: " .. player.health)
+end
+
+function player.printStatus()
+    print("=== Стан гравця ===")
+    print("Рахунок: " .. player.score)
+    print("Здоров'я: " .. player.health .. "/" .. player.max_health)
+end
+
+function player.saveState(filename)
+    local data = {
+        score = player.score,
+        health = player.health
+    }
+    local file = io.open(filename, "w")
+    file:write(json.encode(data))
+    file:close()
+end
+
+function player.loadState(filename)
+    local file = io.open(filename, "r")
+    if file then
+        local data = json.decode(file:read("*a"))
+        player.score = data.score or 0
+        player.health = data.health or player.max_health
+        file:close()
+    else
+        print("Помилка: файл не знайдено.")
+    end
+end
+
+return player
+
